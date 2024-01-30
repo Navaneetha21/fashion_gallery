@@ -1,0 +1,41 @@
+        .container {
+            padding: 30px;
+            position: fixed;
+            align-items: center;
+            justify-content: center;
+        }
+        h1{
+            color: purple;
+        }
+
+        .img-fluid {
+            display: flex;
+            width: 90%;
+        }
+        form{
+            border: 2px;
+            border-color: black;
+        }
+        .form-check {
+            color:darkred;
+        }
+        a{
+            text-decoration: none;
+            color: darkred;
+        }
+
+        .form-outline {
+            color: purple;
+            margin-bottom: 20px;
+        }
+
+
+        .btn-primary {
+            background-color:purple;
+            align-content: center;
+            width: 20%;
+        }
+
+        .btn-primary:hover {
+            background-color: purple;
+        }

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+</head>
+<body>
+{% for x in users %}
+<h1>Hello,{{ x.user_name }}</h1><br>
+<h2>WELCOME TO FASHION GALLERY</h2>
+{% endfor %}
+<div class="form-text">
+    <h6><a href="{% url 'logout' %}">Logout</a></h6>
+</div>
+</body>
+</html>
