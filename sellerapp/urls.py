@@ -8,12 +8,15 @@ urlpatterns = [
     path('seller_register',views.seller_register),
     path('add_product',views.add_product),
     path('view_producttable', views.viewpdct),
-    path('update/<str:product_id>', views.edit),
+    path('update/<str:product_id>', views.editproduct),
     path('remove/<str:product_id>', views.remove),
-    path('image/<str:product_id>', views.image, name='image'),
+    path('image_page/<str:product_id>', views.image, name='image'),
     path('seller_page', views.seller_home),
     path('seller_logout', views.seller_logout, name='seller_logout'),
-    path('product', views.product)
+    path('product', views.product),
+    path('addproduct_page', views.addprdct),
+    path('viewproduct_page', views.viewproduct),
+
 ]
 
 if settings.DEBUG:

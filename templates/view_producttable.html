@@ -12,9 +12,44 @@
         crossorigin="anonymous"></script>
     <title>View Product</title>
   <style>
-    table, th, td {
-  border: 1px solid black;
-}
+ table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        td {
+            background-color: #fff;
+        }
+
+        td button {
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+
+        .dropdown-toggle {
+            text-decoration: none;
+            color: #333;
+        }
+
+        .dropdown-menu {
+            background-color: #fff;
+        }
+
+        .dropdown-item {
+            color: #333;
+        }
   </style>
 
 </head>
@@ -46,8 +81,16 @@
         <td>{{x.subcategory_id}}</td>
 
 
-        <td><button type="submit"><a href="/remove/{{x.product_id}}"> Remove</a></button>
-            <button type="submit"><a href="/update/{{x.product_id}}">Update</a></button></td>
+        <td><button type="submit"><a href="/seller/remove/{{x.product_id}}"> Remove</a></button>
+            <button type="submit"><a href="/seller/update/{{x.product_id}}">Update</a></button>
+            <div class="dropdown">
+                <a href="#" style="text-decoration:none;" class="dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                    <li><a class="dropdown-item" href="/seller/image/{{x.product}}">Image</a></li>
+                    <li><a class="dropdown-item" href="">Specification</a></li>
+                </ul>
+            </div>
+        </td>
   </tr>
     {% endfor %}
 </table>

@@ -15,6 +15,9 @@ class Seller(models.Model):
     created_date = models.DateField(auto_now=True)
     status = models.CharField(max_length=100,default="pending")
 
+    def __str__(self):
+        return self.seller_name
+
     def generate_seller_id(self):
         pattern = "FG"
         sellers_pattern = Seller.objects.filter(seller_id__startswith=str(pattern))
@@ -42,6 +45,9 @@ class Product(models.Model):
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
     subcategory_id = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.product_name
+
     def generate_product_id(self):
         pattern = "FGPDT"
         product_pattern = Product.objects.filter(product_id__startswith=str(pattern))
@@ -63,6 +69,9 @@ class Size(models.Model):
     size = models.CharField(max_length=100)
     product_id = models.ForeignKey(Product, related_name='sizes', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.size_id
+
     def generate_size_id(self):
         pattern = "FGSZ"
         size_pattern = Size.objects.filter(size_id__startswith=str(pattern))
@@ -83,6 +92,9 @@ class Image(models.Model):
     image_id = models.CharField(max_length=10, primary_key=True)
     product_id = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
     image_file= models.ImageField(upload_to='images/')
+
+    def __str__(self):
+        return self.image_id
 
     def generate_image_id(self):
         pattern = "FGIMG"
@@ -106,6 +118,9 @@ class Shirt(models.Model):
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='shirts', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.shirt_id
+
     def generate_shirt_id(self):
         pattern = "FGSRT"
         shirt_pattern = Shirt.objects.filter(shirt_id__startswith=str(pattern))
@@ -127,6 +142,9 @@ class Kurta(models.Model):
     color = models.CharField(max_length=100)
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='kurtas', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.kurta_id
 
 
     def generate_kurta_id(self):
@@ -151,6 +169,9 @@ class Jeans(models.Model):
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='jeans', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.jeans_id
+
 
     def generate_jeans_id(self):
         pattern = "FGJNS"
@@ -170,6 +191,9 @@ class Saree(models.Model):
     color = models.CharField(max_length=100)
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='sarees', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.saree_id
 
 
     def generate_saree_id(self):
@@ -194,6 +218,9 @@ class Tshirt(models.Model):
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='tshirts', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.tshirt_id
+
 
     def generate_tshirt_id(self):
         pattern = "FGTSRT"
@@ -216,6 +243,9 @@ class Western(models.Model):
     color = models.CharField(max_length=100)
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='westerns', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.western_id
 
 
     def generate_western_id(self):
@@ -240,6 +270,10 @@ class Boysdrs(models.Model):
     price = models.IntegerField()
     product_id = models.ForeignKey(Product, related_name='boysdrss', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.boys_id
+
+
 
     def generate_boys_id(self):
         pattern = "FGBD"
@@ -255,3 +289,28 @@ class Boysdrs(models.Model):
 
     class Meta:
         db_table = "boys_table"
+
+
+class Offer(models.Model):
+    offer_id=models.CharField(max_length=100,primary_key=True)
+    discount=models.CharField(max_length=100)
+    event_id=models.ForeignKey(Event, on_delete=models.CASCADE)
+    product_id=models.ForeignKey(Product,related_name='offer', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.offer_id
+
+    def generate_offer_id(self):
+        pattern = "FGO"
+        offer_pattern = Offer.objects.filter(offer_id__startswith=str(pattern))
+        count = offer_pattern.count() + 1
+        return f"{pattern}-{count:03d}"
+
+    def save(self, *args, **kwargs):
+        if not self.offer_id:
+            self.offer_id = self.generate_offer_id()
+
+        super().save(*args, **kwargs)
+    class Meta:
+        db_table = "offer_table"
+

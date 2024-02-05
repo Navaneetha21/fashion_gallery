@@ -22,34 +22,32 @@
             <div class="title">
                 <div class="row">
                     <div class="col"><h4><b>Shopping Cart</b></h4></div>
-                    <div class="col align-self-center text-right text-muted">3 items</div>
                 </div>
             </div>
             <div class="row border-top border-bottom">
+                 {% for x in cart %}
                 <div class="row main align-items-center">
-                    {% for x in product_details %}
                     <div class="col-2">
-                        {% for image in x.images.all|slice:":1" %}
-                        <img class="img-fluid" src="{{ image.image_file.url }}">
-                        {% endfor %}
+                        <img class="img-fluid" src="{{ x.product_id.images.first.image_file.url }}">
                     </div>
                     <div class="col">
-                        <div class="row text-muted">{{ x.product_name }}</div>
+                        <a href="view_product/{{x.product_id}}"><div class="row text-muted">{{ x.product_id.product_name }}</div></a>
                     </div>
                     <div class="col">
-                        <input type="number" min="1" max="5" value="1">
+                        <div class="row text-muted">{{ x.quantity }}</div>
                     </div>
-                    <div class="col">₹{{ x.price }}<span class="close"></span>
+                    <div class="col">
+                        <div class="row text-muted">₹{{ x.product_id.price}}</div>
                     </div>
-                    {% endfor %}
-                </div>
+                </div><br><br>
+                <a href="/removes/{{x.cart_id}}" style="text-decoration:none;margin-left:500px;">Remove</a>
+                  {% endfor %}
             </div>
         </div>
         <div class="col-md-4 summary">
             <div><h5><b>Summary</b></h5></div><br>
             <div class="row">
-                <div class="col" style="padding-left:0;">ITEMS 3</div>
-                <div class="col text-right">&euro; 132.00</div>
+                <div class="col text-right">{{total_price}}</div>
             </div>
             <form>
                 <p>SHIPPING</p>
@@ -57,7 +55,7 @@
             </form>
             <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
                 <div class="col">TOTAL PRICE</div>
-                <div class="col text-right">&euro; 137.00</div>
+                <div class="col text-right">₹ {{total_price}}</div>
             </div>
             <button class="btn">CHECKOUT</button>
         </div>

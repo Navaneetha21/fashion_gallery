@@ -80,7 +80,7 @@ def remove(request,product_id):
     print("remove fun called")
     product_data = Product.objects.get(product_id=product_id)
     product_data.delete()
-    return redirect('/seller/view_producttable')
+    return redirect('/seller/viewproduct_page')
 
 
 def edit(request, product_id):
@@ -108,7 +108,7 @@ def edit(request, product_id):
             data.seller_id = Seller.objects.get(seller_id=seller_id)
             data.subcategory_id = SubCategory.objects.get(subcategory_id=subcategory_id)
             data.save()
-            return redirect('/view_producttable')
+            return redirect('/seller/view_producttable')
         product_data = Product.objects.filter(product_id=product_id)
         return render(request, 'edit_product.html', {'product': product_data,'subcategory': subcategories})
     else:
@@ -129,7 +129,7 @@ def image(request, product_id):
             data.product_id = Product.objects.get(product_id=product_id)
             data.save()
             return redirect('/')
-        return render(request, 'image.html', {'product': product})
+        return render(request, 'image_page.html', {'product': product})
     else:
         return render(request, 'seller_login.html')
 
@@ -156,3 +156,69 @@ def product(request):
     else:
         print("bye")
         return redirect('/seller/seller_login')
+
+def addprdct(request):
+    if 'seller_id' in request.session:
+        seller_id = request.session.get("seller_id")
+        print(seller_id)
+        subcategories = SubCategory.objects.all()
+        if request.method == "POST":
+            seller_id = request.session.get("seller_id")
+            print(seller_id)
+            products = request.POST.get("product_name")
+            descriptions = request.POST.get("description")
+            quantities = request.POST.get("quantity")
+            material = request.POST.get("materials")
+            patterns = request.POST.get("pattern")
+            prices = request.POST.get("price")
+            subcategory_id = request.POST.get("subcategory")
+            data = Product()
+            data.product_name = products
+            data.description = descriptions
+            data.quantity = quantities
+            data.materials = material
+            data.pattern = patterns
+            data.price = prices
+            data.seller_id = Seller.objects.get(seller_id=seller_id)
+            data.subcategory_id = SubCategory.objects.get(subcategory_id=subcategory_id)
+            data.save()
+            return redirect('/')
+        return render(request, 'addproduct_page.html', {'subcategory': subcategories})
+    else:
+        return redirect('/seller/seller_login')
+
+def viewproduct(request):
+    product_data = Product.objects.all()
+    return render(request, 'viewproduct_page.html', {'product': product_data})
+
+def editproduct(request, product_id):
+    if 'seller_id' in request.session:
+        seller_id = request.session.get("seller_id")
+        print(seller_id)
+        subcategories = SubCategory.objects.all()
+        if request.method == "POST":
+            seller_id = request.session.get("seller_id")
+            print(seller_id)
+            products = request.POST.get("product_name")
+            descriptions = request.POST.get("description")
+            quantities = request.POST.get("quantity")
+            material = request.POST.get("materials")
+            patterns = request.POST.get("pattern")
+            prices = request.POST.get("price")
+            subcategory_id = request.POST.get("subcategory")
+            data = Product.objects.get(product_id=product_id)
+            data.product_name = products
+            data.description = descriptions
+            data.quantity = quantities
+            data.materials = material
+            data.pattern = patterns
+            data.price = prices
+            data.seller_id = Seller.objects.get(seller_id=seller_id)
+            data.subcategory_id = SubCategory.objects.get(subcategory_id=subcategory_id)
+            data.save()
+            return redirect('/seller/viewproduct_page')
+        product_data = Product.objects.filter(product_id=product_id)
+        return render(request, 'editproduct.html', {'product': product_data,'subcategory': subcategories})
+    else:
+        return redirect('/seller/seller_login')
+
