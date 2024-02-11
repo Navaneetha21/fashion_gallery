@@ -17,12 +17,34 @@
 </head>
 <body>
 <header>
-    <a href="/" class="logo"><img src="media/images/fg.jpg" alt=""></a>
+    <a href="#" class="logo"><img src="media/images/fg.jpg" alt=""></a>
+    <ul class="navmenu">
+        <li><a href="#Home">Home</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="#Products">Products</a></li>
+        <div class="dropdown">
+            <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                Category</a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                {% for x in main %}
+                <li><a class="dropdown-item" href="category/{{x.maincategory_id}}">{{x.maincategory_name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <li><a href="user_login">Login</a></li>
+        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST">
+                        {% csrf_token %}
+                        <input  type="text" name="product_name" value="{{ request.POST.product_name }}" placeholder="Search.." aria-label="Search">
+                        <button type="submit">Search</button>
+     </form>
+    </ul>
     <div class="nav-icons">
-        <a href="#" ><i style="color: red;" class="fa fa-heart"></i></a>
+        <a href="wishlist"><i style="color: red;" class="fa fa-heart"></i></a>
         <a href="view_cart"><i class="fa fa-shopping-cart"></i></a>
-     </div>
-</header><br><br><br>
+        <a href="profile"><i class="fa fa-user"></i></a>
+        <div class="fa fa-bars" id="menu-icon"></div>
+    </div>
+</header><br><br><br><br><br><br><br><br><br><br><br>
 <section class="trending-product" id="products">
     <form method="POST">
         {% csrf_token %}
@@ -49,6 +71,9 @@
                         <p>{{ x.product_id.product_name }}</p>
                         <p>{{ x.product_id.description }}</p>
                         <p> ₹{{ x.product_id.price }}</p>
+                         {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
                     </div>
                 </div>
             </a>
@@ -57,5 +82,6 @@
     </div>
     </form>
 </section>
+
 </body>
 </html>

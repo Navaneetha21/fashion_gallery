@@ -136,8 +136,9 @@ class Order(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField()
-    offer_id = models.ForeignKey(Offer, on_delete=models.CASCADE)
+    offer_id = models.ForeignKey(Offer, on_delete=models.CASCADE, null=True)
     address_id = models.ForeignKey(Address,  on_delete=models.CASCADE)
+    ordered_date = models.DateField(auto_now_add=True, null=True)
     status = models.CharField(max_length=100, default="Pending")
 
     def __str__(self):
@@ -157,7 +158,7 @@ class Order(models.Model):
 
     class Meta:
         db_table = "order_table"
-#
+
 # class Payment(models.Model):
 #     payment_id = models.CharField(max_length=10, primary_key=True)
 #     payment_type = models.CharField(max_length=100)

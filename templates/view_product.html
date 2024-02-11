@@ -66,6 +66,7 @@
                   {% endfor %}
             </div>
         </div>
+     <input type="text" value="Nooo" name="not_go" hidden="hidden">
         <div class="right" style="margin-top:30px;">
             <div class="pname">
                 {{x.product_name}}<br>
@@ -120,8 +121,8 @@
             <span class="product-color">color:{{boysdrs.color}}</span><br>
             {% endfor %}
             <div class="btn-box">
-                <button type="submit" class="cart-btn">Add to Cart</button>
-                <button type="submit" class="buy-btn">Buy Now</button>
+                <button type="submit" name="add_to_cart" class="cart-btn">Add to Cart</button>
+                <button type="submit"  name="buy_now" class="buy-btn">Buy Now</button>
             </div><br><br>
             <div>
             <a href="/review/{{x.product_id}}" style="text-decoration:none;">Add Your Review</a><br><br><br>

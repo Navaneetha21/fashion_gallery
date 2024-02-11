@@ -41,9 +41,10 @@ class Product(models.Model):
     quantity = models.IntegerField()
     materials = models.CharField(max_length=100)
     pattern = models.CharField(max_length=100)
-    price = models.CharField(max_length=100)
+    price = models.IntegerField()
     seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
     subcategory_id = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    created_date = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.product_name
@@ -293,7 +294,7 @@ class Boysdrs(models.Model):
 
 class Offer(models.Model):
     offer_id=models.CharField(max_length=100,primary_key=True)
-    discount=models.CharField(max_length=100)
+    discount=models.IntegerField()
     event_id=models.ForeignKey(Event, on_delete=models.CASCADE)
     product_id=models.ForeignKey(Product,related_name='offer', on_delete=models.CASCADE)
 

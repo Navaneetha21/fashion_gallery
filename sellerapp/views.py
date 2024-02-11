@@ -114,7 +114,7 @@ def edit(request, product_id):
     else:
         return redirect('/seller/seller_login')
 
-def image(request, product_id):
+def image_page(request, product_id):
     if 'seller_id' in request.session:
         product = Product.objects.filter(product_id=product_id)
         print("hello image")
@@ -222,3 +222,18 @@ def editproduct(request, product_id):
     else:
         return redirect('/seller/seller_login')
 
+def addoffer(request, product_id):
+    if 'seller_id' in request.session:
+        seller_id = request.session.get("seller_id")
+        product = Product.objects.filter(product_id=product_id)
+        if request.method == "POST":
+            discount = request.post.get('discount')
+            data = Offer()
+            data.discount = discount
+            data.seller_id = Seller.objects.get(seller_id=seller_id)
+            data.product_id = Product.objects.get(product_id=product_id)
+            data.save()
+            return redirect('/')
+        return render(request, 'add_offer.html')
+    else:
+        return redirect('/seller_login')

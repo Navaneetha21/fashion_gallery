@@ -8,8 +8,8 @@ urlpatterns = [
     path('user_register',views.user_register),
     path('',views.home),
     path('logout', views.logout, name='logout'),
-    path('view_product/<str:id>', views.view_product, name='view_product'),
-    path('view_product/view_cart/<str:id>', views.view_cart, name='view_cart'),
+    path('view_product/<str:product_id>', views.view_product, name='view_product'),
+    path('view_product/view_cart/<str:product_id>', views.view_cart, name='view_cart'),
     path('view_cart', views.view_cart),
     path('profile', views.profile),
     path('address', views.address),
@@ -21,6 +21,11 @@ urlpatterns = [
     path('wishlist', views.wishlist),
     path('search', views.search),
     path('about', views.about),
+    path('category/<str:maincategory_id>', views.category),
+    path('view_order', views.view_order),
+    path('cancel/<str:order_id>', views.cancel),
+    path('moreproduct',views.more),
+    path('discount_sale', views.discount),
     # path('otp/<uid>',otp)
 
 ]

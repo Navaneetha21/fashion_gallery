@@ -18,75 +18,158 @@
 <body>
 <header>
     <a href="#" class="logo"><img src="media/images/fg.jpg" alt=""></a>
-    <form class="form-inline my-2 my-lg-0"  method="POST">
+    <ul class="navmenu">
+        <li><a href="#Home">Home</a></li>
+        <li><a href="about">About</a></li>
+        <li><a href="#Products">Products</a></li>
+        <div class="dropdown">
+            <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                Category</a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                {% for x in main %}
+                <li><a class="dropdown-item" href="category/{{x.maincategory_id}}">{{x.maincategory_name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <li><a href="user_login">Login</a></li>
+        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST">
                         {% csrf_token %}
                         <input  type="text" name="product_name" value="{{ request.POST.product_name }}" placeholder="Search.." aria-label="Search">
                         <button type="submit">Search</button>
      </form>
+    </ul>
     <div class="nav-icons">
-        <a href="#" ><i style="color: red;" class="fa fa-heart"></i></a>
+        <a href="wishlist"><i style="color: red;" class="fa fa-heart"></i></a>
         <a href="view_cart"><i class="fa fa-shopping-cart"></i></a>
-     </div>
-</header><br><br><br><br><br><br><br>
+        <a href="profile"><i class="fa fa-user"></i></a>
+        <div class="fa fa-bars" id="menu-icon"></div>
+    </div>
+</header><br><br><br><br>
+<form id="myForm" class="form-inline my-2 my-lg-0"  method="POST">
+                        {% csrf_token %}
+        <input type="hidden" name="sort_option" id="sort_option" value="">
+        <input type="hidden" name="sort_discount" id="sort_discount" value="">
+        <input  type="hidden" name="sort_arrival" id="sort_arrival" value="">
+
+</form>
 <div class="container">
+    <div class="d-flex my-4 flex-wrap">
+        <div class="box me-2 my-1">
  <div class="dropdown">
-                <a href="#" style="text-decoration:none; color:black;" class="dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">Sort by</a>
+                <a href="#" style="text-decoration:none; color:black;" class="dropdown-toggle" type="choose"  id="dropdownMenus" data-bs-toggle="dropdown" aria-expanded="false">Sort by</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                    <li><a class="dropdown-item" href="?price=200">Under 200</a></li>
-                    <li><a class="dropdown-item" href="?price=500">Under 500</a></li>
-                    <li><a class="dropdown-item" href="?price=600">Under 600</a></li>
-                    <li><a class="dropdown-item" href="?price=800">Under 800</a></li>
-                    <li><a class="dropdown-item" href="?price=1000">Under 1000</a></li>
-                    <li><a class="dropdown-item" href="?price=2000">Under 2000</a></li>
+                    <li>  <button type="button" class="dropdown-item" onclick="setSortOption(200)">Under 200</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortOption(550)">Under 550</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortOption(600)">Under 600</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortOption(800)">Under 800</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortOption(1000)">Under 1000</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortOption(1200)">Under 1200</button></li>
                 </ul>
  </div><br>
-<div class="dropdown">
-    <a href="#" style="text-decoration:none; color:black;" class="dropdown-toggle" type="choose" id="dropdownMenus" data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-        <li><a class="dropdown-item" href="#">Shirt</a></li>
-        <li><a class="dropdown-item" href="#">Kurta</a></li>
-        <li><a class="dropdown-item" href="#">Girls Western Wear</a></li>
-        <li><a class="dropdown-item" href="#">Jeans</a></li>
-        <li><a class="dropdown-item" href="#">Saree</a></li>
-        <li><a class="dropdown-item" href="#">Boys Dress</a></li>
-        <li><a class="dropdown-item" href="#">T-shirt</a></li>
-    </ul>
+        </div>
+        <div class="box me-4 my-1">
+    <div class="dropdown">
+                <a href="#" style="text-decoration:none; color:black;" class="dropdown-toggle" type="choose"  id="dropdownMenuss" data-bs-toggle="dropdown" aria-expanded="false">Discount</a>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                    <li>  <button type="button" class="dropdown-item" onclick="setSortDiscount(10)">Under 10%</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortDiscount(20)">Under 20%</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortDiscount(25)">Under 25%</button></li>
+                    <li><button type="button" class="dropdown-item" onclick="setSortDiscount(50)">Under 50%</button></li>
+                </ul>
+ </div><br>
+        </div>
+        <div class="box me-4 my-1">
+    <div>
+        <button type="button" class="item" onclick="setSortArrival('created_date')">New Arrival</button>
+        </div>
+        </div>
 </div>
 </div>
 <section class="trending-product" id="products">
-        <form method="POST">
-            {% csrf_token %}
-            <div class="row">
-                {% for x in search %}
-                <div class="col-md-6">
-                    <div class="product-card">
-                        <a href="view_product/{{x.product_id}}" style="text-decoration:none">
-                            {% for image in x.images.all|slice:":1" %}
-                            <img src="{{ image.image_file.url }}" alt="Product Image">
-                            {% endfor %}
-                        </a>
-                        <div class="product-details">
-                            <div class="heart-icon">
-                                <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
-                            </div>
-                            <div class="ratting">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-half"></i>
-                            </div>
-                            <div class="price">
-                                <p>{{ x.product_name }}</p>
-                                <p>{{ x.description }}</p>
-                                <p> ₹{{ x.price }}</p>
-                            </div>
-                        </div>
+    <form method="POST">
+        {% csrf_token %}
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in search %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="view_product/{{x.product_id}}" style="text-decoration:none">
+                    {% for image in x.images.all|slice:":1" %}
+                    <img src="{{ image.image_file.url }}" alt="Product Image" width="200" height="200">
+                    {% endfor %}
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_name }}</p>
+                        <p>{{ x.description }}</p>
+                        <p> ₹{{ x.price }}</p>
+                         {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-        </form>
-    </section>
+         </div>
+
+        {% endfor %}
+</div>
+    </form>
+</section>
+<section class="products">
+    <form method="POST">
+        {% csrf_token %}
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in searchs %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="/view_product/{{x.product_id}}" style="text-decoration:none">
+                    <img src="{{ x.product_id.images.first.image_file.url }}" alt="Product Image" width="200" height="200">
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_id.product_name }}</p>
+                        <p>{{ x.product_id.description }}</p>
+                        <p> ₹{{ x.product_id.price }}</p>
+                        <p style="color:gray;">{{x.discount}}%</p>
+                    </div>
+                </div>
+         </div>
+
+        {% endfor %}
+</div>
+    </form>
+</section>
+
+<script>
+  function setSortOption(option) {
+    document.getElementById('sort_option').value = option;
+    document.getElementById('myForm').submit();
+  }
+  function setSortDiscount(options) {
+   document.getElementById('sort_discount').value = options;
+   document.getElementById('myForm').submit();
+   }
+   function setSortArrival(optionss) {
+    console.log(optionss);
+    document.getElementById('sort_arrival').value = optionss;
+    document.getElementById('myForm').submit();
+   }
+</script>
 </body>
 </html>

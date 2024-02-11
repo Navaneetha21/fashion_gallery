@@ -14,6 +14,46 @@
      {% load static  %}
     <link rel="stylesheet" href="{% static 'css/style3.css' %}">
     <title>home</title>
+    <style>
+
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-image: url('media/images/dressoffer.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: white;
+}
+
+.overlay-text h5,
+.overlay-text p,
+.overlay-text a {
+    margin-left:400px;
+}
+
+.overlay-text a.main-btn {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: white;
+    padding: 8px 16px;
+    background-color: #333;
+    border-radius: 4px;
+}
+
+.overlay-text a.main-btn:hover {
+    background-color: #555;
+}
+    </style>
 </head>
 <body>
 <header>
@@ -26,13 +66,13 @@
             <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Category</a>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                <li><a class="dropdown-item" href="#">Men's dress</a></li>
-                <li><a class="dropdown-item" href="#">Women's dress</a></li>
-                <li><a class="dropdown-item" href="#">Kid's dress</a></li>
+                {% for x in main %}
+                <li><a class="dropdown-item" href="category/{{x.maincategory_id}}">{{x.maincategory_name}}</a></li>
+                {% endfor %}
             </ul>
         </div>
         <li><a href="user_login">Login</a></li>
-        <form class="form-inline my-2 my-lg-0"  method="POST">
+        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST">
                         {% csrf_token %}
                         <input  type="text" name="product_name" value="{{ request.POST.product_name }}" placeholder="Search.." aria-label="Search">
                         <button type="submit">Search</button>
@@ -47,20 +87,31 @@
 </header>
 <section class="main-home" style="background: url('media/images/sa.png') no-repeat; background-position: right;" id="home">
     <div class="main-text">
-        <h5>Winter Collection</h5>
-        <h1>New Winter<br>Collection 2023</h1>
+        <h5>Shivaratri Collection</h5>
+        <h1>New Shivaratri<br>Collection 2024</h1>
         <p>There's Nothing like Trend</p>
-        <a href="#" class="main-btn">Shop Now <i class="fa fa-arrow-right"></i></a>
+        <a href="moreproduct" class="main-btn">Shop Now <i class="fa fa-arrow-right"></i></a>
     </div>
 </section>
-<section class="trending-product" id="products">
+<section class="main-home1">
+    <div class="main-text1">
+        <div class="image-container">
+            <div class="overlay-text">
+                <h5>New Offers</h5>
+                <p>Sales Upto 50% Off</p>
+                <a href="discount_sale" class="main-btn">Shop Now <i class="fa fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="trending-product">
     <form method="POST">
         {% csrf_token %}
     <div class="text-center">
-        <h2>Our Trending <span>Products</span></h2>
+        <h2>New<span>Arrivals</span></h2>
     </div>
 <div class="row row-cols-2 row-cols-lg-4">
-    {% for x in product_details %}
+    {% for x in arrival %}
     <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
             <a href="view_product/{{x.product_id}}" style="text-decoration:none">
                     {% for image in x.images.all|slice:":1" %}
@@ -83,7 +134,127 @@
                         <p>{{ x.description }}</p>
                         <p> ₹{{ x.price }}</p>
                         {% for offer in x.offer.all %}
-                        <p style="color:gray;">{{offer.discount}}</p>
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
+                    </div>
+                </div>
+         </div>
+
+        {% endfor %}
+</div>
+        </form>
+</section>
+<section class="trending-product">
+    <form method="POST">
+        {% csrf_token %}
+    <div class="text-center">
+        <h2>Mens<span>Wear</span></h2>
+    </div>
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in mens %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="view_product/{{x.product_id}}" style="text-decoration:none">
+                    {% for image in x.images.all|slice:":1" %}
+                    <img src="{{ image.image_file.url }}" style="width:250px; height:250px;" alt="Product Image">
+                    {% endfor %}
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_name }}</p>
+                        <p>{{ x.description }}</p>
+                        <p> ₹{{ x.price }}</p>
+                        {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
+                    </div>
+                </div>
+         </div>
+
+        {% endfor %}
+</div>
+        </form>
+</section>
+<section class="trending-product">
+    <form method="POST">
+        {% csrf_token %}
+    <div class="text-center">
+        <h2>Womens<span>Wear</span></h2>
+    </div>
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in womens %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="view_product/{{x.product_id}}" style="text-decoration:none">
+                    {% for image in x.images.all|slice:":1" %}
+                    <img src="{{ image.image_file.url }}" style="width:250px; height:250px;" alt="Product Image">
+                    {% endfor %}
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_name }}</p>
+                        <p>{{ x.description }}</p>
+                        <p> ₹{{ x.price }}</p>
+                        {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
+                    </div>
+                </div>
+         </div>
+
+        {% endfor %}
+</div>
+        </form>
+</section>
+<section class="trending-product" id="products">
+    <form method="POST">
+        {% csrf_token %}
+    <div class="text-center">
+        <h2>Kids<span>Wear</span></h2>
+    </div>
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in kids %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="view_product/{{x.product_id}}" style="text-decoration:none">
+                    {% for image in x.images.all|slice:":1" %}
+                    <img src="{{ image.image_file.url }}" style="width:250px; height:250px;" alt="Product Image">
+                    {% endfor %}
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_name }}</p>
+                        <p>{{ x.description }}</p>
+                        <p> ₹{{ x.price }}</p>
+                        {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
                         {% endfor %}
                     </div>
                 </div>

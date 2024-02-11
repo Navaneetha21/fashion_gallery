@@ -68,40 +68,65 @@ def logout(request):
 
 
 def home(request):
-    if 'user_id' in request.session:
-        user_id = request.session.get('user_id')
-        product_details = Product.objects.select_related('seller_id', 'subcategory_id').prefetch_related('images','review','sizes','cart','shirts','offer','kurtas','jeans','sarees','tshirts','westerns','boysdrss').all()
-        if request.method == "POST":
-            search = request.POST.get('product_name')
-            if search:
-                product_details = Product.objects.filter(Q(product_name__icontains=search)|Q(price__icontains=search))
-                return render(request, 'search.html', {'search': product_details})
-        elif 'price' in request.GET:
-            price = request.GET.get('price')
-            product_details = Product.objects.filter(price=price)
+    product_details = Product.objects.select_related('seller_id', 'subcategory_id').prefetch_related('images', 'review', 'sizes', 'cart','shirts', 'offer', 'kurtas', 'jeans', 'sarees', 'tshirts','westerns','boysdrss').all()
+    product = Product .objects.all().order_by('-created_date')[:4]
+    maincategory = MainCategory.objects.all()
+    men_product_details = Product.objects.prefetch_related('images').filter(subcategory_id__maincategory_id=MainCategory.objects.get(maincategory_id="FGMC-001"))[:4];
+    womens_details = Product.objects.prefetch_related('images').filter(subcategory_id__maincategory_id=MainCategory.objects.get(maincategory_id="FGMC-002"))[:4];
+    kids_details = Product.objects.prefetch_related('images').filter(subcategory_id__maincategory_id=MainCategory.objects.get(maincategory_id="FGMC-003"))[:4];
+    if request.method == "POST":
+        search = request.POST.get('product_name')
+        if search:
+            product_details = Product.objects.filter(Q(product_name__icontains=search) | Q(price__icontains=search))
             return render(request, 'search.html', {'search': product_details})
-        return render(request, 'home.html', {'product_details': product_details})
-    else:
-        return redirect('/user_login')
+    elif 'price' in request.GET:
+        price = request.GET['price']
+        product_details = Product.objects.filter(price__lte=int(price))
+        return render(request, 'search.html', {'search': product_details})
+    return render(request, 'home.html', {'product_details': product_details, 'main': maincategory, 'arrival':product, 'mens':men_product_details, 'womens':womens_details, 'kids':kids_details})
 
 
-def view_product(request, id):
-    if 'user_id' in request.session:
-        user_id = request.session.get("user_id")
-        product_details = Product.objects.select_related('seller_id', 'subcategory_id').prefetch_related('images','review','sizes','cart','shirts','kurtas','jeans','sarees','tshirts','westerns','boysdrss').filter(product_id=id)
-        if request.method == "POST":
-            quantities = request.POST.get('quantity')
-            data = Cart()
-            data.user_id = User.objects.get(user_id=user_id)
-            data.product_id = Product.objects.get(product_id=id)
-            data.quantity = quantities
-            data.save()
-            return redirect('/view_cart')
-        return render(request, 'view_product.html', {'product': product_details})
-    else:
-        return redirect('/user_login')
 
 
+def view_product(request, product_id):
+    maincategory = MainCategory.objects.all()
+    product_details = Product.objects.select_related('seller_id', 'subcategory_id').prefetch_related('images','review','sizes','cart','shirts','kurtas','jeans','sarees','tshirts','westerns','boysdrss').filter(product_id=product_id)
+    if request.method == "POST":
+        if 'user_id' in request.session:
+            user_id = request.session.get("user_id")
+            print(request.POST)
+            if 'add_to_cart' in request.POST:
+                print('this is for add')
+                quantity = request.POST.get('quantity')
+                data = Cart()
+                data.user_id = User.objects.get(user_id=user_id)
+                data.product_id = Product.objects.get(product_id=product_id)
+                data.quantity = quantity
+                data.save()
+                return redirect('/view_cart')
+            elif 'buy_now' in request.POST or "oder_btn" in request.POST:
+                print('this is buy')
+                quantity = request.POST.get('quantity')
+                address = Address.objects.filter(user_id=User.objects.get(user_id=user_id))
+                if request.method == "POST" and request.POST.get('not_go') != "Nooo":
+                    print("hello buy friend")
+                    quantity = request.POST.get('quantity')
+                    address_id = request.POST.get('address')
+                    data = Order()
+                    data.user_id = User.objects.get(user_id=user_id)
+                    data.quantity = quantity
+                    data.product_id = Product.objects.get(product_id=product_id)
+                    data.address_id = Address.objects.get(address_id=address_id)
+                    data.save()
+                    return redirect('/')
+                    return render(request, 'order.html',{'order': product_details, 'address': address, "quantity": quantity})
+                return render(request, 'view_product.html', {'product': product_details, 'main':maincategory})
+            else:
+                return redirect('/user_login')
+
+def more(request):
+    more = Product.objects.all()
+    return render(request, 'moreproduct.html', {'mores':more})
 def view_cart(request):
     if 'user_id' in request.session:
         product_details = Cart.objects.filter(user_id=User.objects.get(user_id=request.session['user_id']))
@@ -113,7 +138,44 @@ def view_cart(request):
         )['total_price'] or Decimal('0.00')
         print(f"Total price for user : ₹{total_price}")
 
-        return render(request, 'view_cart.html',{'cart': product_details, 'total_price': total_price})
+        return render(request, 'view_cart.html', {'cart': product_details, 'total_price': total_price})
+    else:
+        return redirect('/user_login')
+
+
+def order(request):
+    if 'user_id' in request.session:
+        user_id = request.session.get('user_id')
+        product = Order.objects.filter(user_id=User.objects.get(user_id=request.session['user_id']))
+        data = product.values()
+        print(data)
+        total_price = Order.objects.filter(user_id=User.objects.get(user_id=request.session['user_id'])).aggregate(
+            total_price=Sum(F('product_id__price') * F('quantity'), output_field=models.DecimalField())
+        )['total_price'] or Decimal('0.00')
+        print(f"Total price for user : ₹{total_price}")
+        return render(request, 'order.html', {'products': product, 'address': address, 'total_price': total_price})
+    else:
+        return redirect('/user_login')
+
+
+def view_order(request):
+    if 'user_id' in request.session:
+        product_details = Order.objects.filter(user_id=User.objects.get(user_id=request.session['user_id']))
+        data = product_details.values()
+        print(data)
+        new_order = Order.objects.filter(status='pending').order_by('-ordered_date')
+        delivered_order = Order.objects.filter(status='active').order_by('-ordered_date')
+        cancelled_order = Order.objects.filter(status='cancel').order_by('-ordered_date')
+        return render(request, 'view_order.html', {'orders': product_details, 'new':new_order, 'deliver':delivered_order, 'cancel':cancelled_order})
+    else:
+        return redirect('/user_login')
+
+def cancel(request,order_id):
+    if 'user_id' in request.session:
+        order = Order.objects.get(order_id=order_id)
+        order.status = 'cancel'
+        order.save()
+        return redirect('/view_order')
     else:
         return redirect('/user_login')
 
@@ -204,13 +266,12 @@ def addreview(request, product_id):
         product = Product.objects.filter(product_id=product_id)
         if request.method == "POST":
             review = request.POST.get("review")
-            product_id = request.POST.get("product_id")
             data = Review()
             data.review = review
             data.user_id = User.objects.get(user_id=user_id)
             data.product_id = Product.objects.get(product_id=product_id)
             data.save()
-            return redirect('/view_product')
+            return redirect(f'/view_product/{product_id}')
         return render(request, 'review.html', {'products': product})
     else:
         return redirect('/user_login')
@@ -233,26 +294,69 @@ def removes(request, cart_id):
 def wishlist(request):
     if 'user_id' in request.session:
         product_details = Wishlist.objects.filter(user_id=User.objects.get(user_id=request.session['user_id']))
+        maincategory = MainCategory.objects.all()
         data = product_details.values()
         print(data)
-        return render(request, 'wishlist.html', {'wishlist': product_details})
+        return render(request, 'wishlist.html', {'wishlist': product_details, 'main':maincategory})
     else:
         return redirect('/user_login')
 
 
 def search(request):
-    if 'user_id' in request.session:
-        data = Product.objects.select_related('seller_id', 'subcategory_id').prefetch_related('images', 'review','sizes', 'cart', 'shirts','kurtas', 'jeans','sarees', 'tshirts','westerns','boysdrss').filter(product_id=id)
-        subcategory = Product.objects.all()
-        if request.method == 'POST':
-            search = request.POST.get("product_name")
-            if search:
-                data = Product.objects.filter(
-                    Q(product_name__icontains=search) | Q(price__icontains=search) | Q(subcategory__icontains=search))
-        return render(request, 'search.html', {'search': data, 'datas': data})
+    print("now search")
+    maincategory = MainCategory.objects.all()
+    data = Offer.objects.all()
+    if request.method == "POST":
+        print("now search post is working")
+        search = request.POST.get("product_name")
+        sort_option = request.POST.get('sort_option')
+        sort_discount = request.POST.get('sort_discount')
+        sort_arrival = request.POST.get('sort_arrival')
+        if sort_option  and search:
+            data = Product.objects.filter(Q(product_name__icontains=search) | Q(price__icontains=search))
+            data = data.filter(price__lte=int(sort_option))
+            return render(request, 'search.html',{'data':data})
+        elif sort_discount and search:
+            data = Offer.objects.filter(discount__lte=int(sort_discount))
+            data = data.filter(product_id__product_name__icontains=search)
+            return render(request, 'search.html', {'searchs':data})
+        elif sort_arrival and search:
+            data = Product.objects.filter(product_name__icontains=search)
+            data = data.order_by('-created_date')
+        elif search:
+            data = Product.objects.filter(Q(product_name__icontains=search) | Q(price__icontains=search))
+            return render(request, 'search.html', {'search': data, 'searchs': data, 'main':maincategory})
+        return render(request, 'search.html', {'search': data, 'searchs': data, 'main':maincategory})
     else:
         return redirect('/user_login')
 
+
 def about(request):
-    about=loader.get_template('about.html')
+    about = loader.get_template('about.html')
     return HttpResponse(about.render())
+
+
+
+def category(request, maincategory_id):
+    maincategory_instance = MainCategory.objects.get(maincategory_id=maincategory_id)
+    product_details = Product.objects.prefetch_related('images').filter(subcategory_id__maincategory_id=maincategory_instance)
+    if request.method == "POST":
+        sort_option = request.POST.get('sort_option')
+        sort_discount = request.POST.get('sort_discount')
+        sort_arrival = request.POST.get('sort_arrival')
+        if sort_option == 'low_to_high':
+            product_details = product_details.order_by('price')
+        elif sort_option == 'high_to_low':
+            product_details = product_details.order_by('-price')
+        elif sort_arrival:
+            product_details = Product.objects.prefetch_related('images').filter(subcategory_id__maincategory_id=maincategory_instance)
+            product_details = product_details.order_by('-created_date')
+        elif sort_discount:
+            product_details = Offer.objects.filter(discount__lte=int(sort_discount))
+            product_details = product_details.filter(product_id__subcategory_id__maincategory_id=maincategory_instance)
+            return render(request, 'page.html',{'products':product_details})
+    return render(request, 'page.html', {'product_detail': product_details})
+
+def discount(request):
+    discount = Offer.objects.all()
+    return render(request, 'discount_sale.html', {'discount': discount})

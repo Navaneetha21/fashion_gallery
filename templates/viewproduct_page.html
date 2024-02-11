@@ -77,7 +77,6 @@ body {
 <body>
   <div class="sidebar">
     <div class="logo-details">
-<!--      <i class='bx bxl-c-plus-plus'></i>-->
       <span class="logo_name">FG</span>
     </div>
       <ul class="nav-links">
@@ -99,12 +98,6 @@ body {
             <span class="links_name">Order list</span>
           </a>
         </li>
-<!--        <li>-->
-<!--          <a href="#">-->
-<!--            <i class='bx bx-pie-chart-alt-2' ></i>-->
-<!--            <span class="links_name">Analytics</span>-->
-<!--          </a>-->
-<!--        </li>-->
         <li>
           <a href="#">
             <i class='bx bx-coin-stack' ></i>
@@ -117,18 +110,6 @@ body {
             <span class="links_name">Total order</span>
           </a>
         </li>
-<!--        <li>-->
-<!--          <a href="#">-->
-<!--            <i class='bx bx-user' ></i>-->
-<!--            <span class="links_name">Team</span>-->
-<!--          </a>-->
-<!--        </li>-->
-<!--        <li>-->
-<!--          <a href="#">-->
-<!--            <i class='bx bx-message' ></i>-->
-<!--            <span class="links_name">Messages</span>-->
-<!--          </a>-->
-<!--        </li>-->
         <li>
           <a href="#">
             <i class='bx bx-heart' ></i>
@@ -204,8 +185,9 @@ body {
             <div class="dropdown">
                 <a href="#" style="text-decoration:none;" class="dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">More</a>
                 <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
-                    <li><a class="dropdown-item" href="/seller/image/{{x.product}}">Image</a></li>
+                    <li><a class="dropdown-item" href="/seller/image_page/{{x.product_id}}">Image</a></li>
                     <li><a class="dropdown-item" href="">Specification</a></li>
+                    <li><a class="dropdown-item" href="/seller/add_offer/{{x.product_id}}">Offer</a></li>
                 </ul>
             </div>
         </td>
