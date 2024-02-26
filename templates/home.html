@@ -15,7 +15,31 @@
     <link rel="stylesheet" href="{% static 'css/style3.css' %}">
     <title>home</title>
     <style>
+ .form-inline {
+        display: flex;
+        align-items: center;
+    }
 
+    .form-inline input[type="text"] {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        margin-right: 5px;
+        width: 200px;
+    }
+
+    .form-inline button {
+        padding: 8px 12px;
+        border-radius: 4px;
+        background-color: gray;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+
+    .form-inline button:hover {
+        background-color: blue;
+    }
 .image-container {
     position: relative;
     width: 100%;
@@ -61,7 +85,6 @@
     <ul class="navmenu">
         <li><a href="#Home">Home</a></li>
         <li><a href="about">About</a></li>
-        <li><a href="#Products">Products</a></li>
         <div class="dropdown">
             <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Category</a>
@@ -103,6 +126,46 @@
             </div>
         </div>
     </div>
+</section>
+<section class="trending-product" style="box-shadow:none;">
+    <form method="POST">
+        {% csrf_token %}
+    <div class="text-center">
+        <h2>Recently<span>Viewed</span></h2>
+    </div>
+<div class="row row-cols-2 row-cols-lg-4">
+    {% for x in recent_view %}
+    <div class="card p-2" style="width:17rem; margin-top:10px; margin-bottom:10px; margin-right:10px; margin-left:10px; border:1px solid;">
+            <a href="view_product/{{x.product_id}}" style="text-decoration:none">
+                    {% for image in x.images.all|slice:":1" %}
+                    <img src="{{ image.image_file.url }}" style="width:250px; height:250px;" alt="Product Image">
+                    {% endfor %}
+            </a>
+                <div class="card-body">
+                    <div class="heart-icon">
+                        <button style="border:none;" type="submit"><i class="fa fa-heart"></i></button>
+                    </div>
+                    <div class="ratting">
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star"></i>
+                        <i class="fa fa-star-half"></i>
+                    </div>
+                    <div class="price">
+                        <p>{{ x.product_name }}</p>
+                        <p>{{ x.description }}</p>
+                        <p> ₹{{ x.price }}</p>
+                        {% for offer in x.offer.all %}
+                        <p style="color:gray;">{{offer.discount}}%</p>
+                        {% endfor %}
+                    </div>
+                </div>
+         </div>
+
+        {% endfor %}
+</div>
+        </form>
 </section>
 <section class="trending-product">
     <form method="POST">

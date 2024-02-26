@@ -17,11 +17,10 @@
 </head>
 <body>
 <header>
-    <a href="#" class="logo"><img src="media/images/fg.jpg" alt=""></a>
+    <a href="/" class="logo"><img src="media/images/fg.jpg" alt=""></a>
     <ul class="navmenu">
-        <li><a href="#Home">Home</a></li>
+        <li><a href="/">Home</a></li>
         <li><a href="about">About</a></li>
-        <li><a href="#Products">Products</a></li>
         <div class="dropdown">
             <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Category</a>
@@ -32,10 +31,13 @@
             </ul>
         </div>
         <li><a href="user_login">Login</a></li>
-        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST">
+        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST" id="myForm">
                         {% csrf_token %}
                         <input  type="text" name="product_name" value="{{ request.POST.product_name }}" placeholder="Search.." aria-label="Search">
                         <button type="submit">Search</button>
+                        <input type="hidden" name="sort_option" id="sort_option" value="">
+                        <input type="hidden" name="sort_discount" id="sort_discount" value="">
+                        <input  type="hidden" name="sort_arrival" id="sort_arrival" value="">
      </form>
     </ul>
     <div class="nav-icons">
@@ -45,13 +47,6 @@
         <div class="fa fa-bars" id="menu-icon"></div>
     </div>
 </header><br><br><br><br>
-<form id="myForm" class="form-inline my-2 my-lg-0"  method="POST">
-                        {% csrf_token %}
-        <input type="hidden" name="sort_option" id="sort_option" value="">
-        <input type="hidden" name="sort_discount" id="sort_discount" value="">
-        <input  type="hidden" name="sort_arrival" id="sort_arrival" value="">
-
-</form>
 <div class="container">
     <div class="d-flex my-4 flex-wrap">
         <div class="box me-2 my-1">
@@ -80,7 +75,7 @@
         </div>
         <div class="box me-4 my-1">
     <div>
-        <button type="button" class="item" onclick="setSortArrival('created_date')">New Arrival</button>
+        <button type="button" style="border:none;background:none;" class="item" onclick="setSortArrival('created_date')">New Arrival</button>
         </div>
         </div>
 </div>

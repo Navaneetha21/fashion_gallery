@@ -75,7 +75,7 @@ body {
   </style>
    </head>
 <body>
-  <div class="sidebar">
+ <div class="sidebar">
     <div class="logo-details">
       <span class="logo_name">FG</span>
     </div>
@@ -93,33 +93,15 @@ body {
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class='bx bx-list-ul' ></i>
-            <span class="links_name">Order list</span>
+          <a href="view_offer">
+            <i class='bx bx-offer' ></i>
+            <span class="links_name">Offer</span>
           </a>
         </li>
         <li>
-          <a href="#">
-            <i class='bx bx-coin-stack' ></i>
-            <span class="links_name">Stock</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class='bx bx-book-alt' ></i>
-            <span class="links_name">Total order</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class='bx bx-heart' ></i>
-            <span class="links_name">Favourites</span>
-          </a>
-        </li>
-        <li>
-          <a href="#">
-            <i class='bx bx-cog' ></i>
-            <span class="links_name">Setting</span>
+          <a href="seller_order">
+            <i class='bx bx-order' ></i>
+            <span class="links_name">Order</span>
           </a>
         </li>
         <li class="log_out">
@@ -137,8 +119,12 @@ body {
         <span class="dashboard">Dashboard</span>
       </div>
       <div class="search-box">
-        <input type="text" placeholder="Search...">
-        <i class='bx bx-search' ></i>
+          <form method="POST">
+              {% csrf_token %}
+        <input  type="text" placeholder="Search.." name="product_name" value="{{ request.POST.product_name }}" aria-label="Search" style="width:50%;">
+                        <button type="submit">Search</button>
+<!--        <i class='bx bx-search' ></i>-->
+          </form>
       </div>
       {% for x in sellers %}
       <div class="profile-details">
@@ -164,6 +150,7 @@ body {
     <td style="color:blue;"><b>Pattern</b></td>
     <td style="color:blue;"><b>Price</b></td>
     <td style="color:blue;"><b>Subcategory</b></td>
+          <td style="color:blue;"><b>Maincategory</b></td>
       <td style="color:blue;"><b>Actions</b></td>
 
   </tr>
@@ -178,6 +165,7 @@ body {
 
         <td>{{x.price}}</td>
         <td>{{x.subcategory_id}}</td>
+          <td>{{x.subcategory_id.maincategory_id.maincategory_name}}</td>
 
 
         <td><a style="text-decoration:none;" href="/seller/remove/{{x.product_id}}"> Remove</a>

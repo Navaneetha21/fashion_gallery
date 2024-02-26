@@ -17,62 +17,6 @@
      {% load static  %}
     <link rel="stylesheet" href="{% static 'css/style7.css' %}">
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-       <style>
-    table, th, td {
-  border: 1px solid black;
-}
-body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
-            margin: 0;
-            padding: 0;
-        }
-
-        table {
-            width: 80%;
-            max-width: 800px;
-            border-collapse: collapse;
-            margin-top: 50px;
-
-
-        }
-
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 10px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        .dropdown-toggle {
-            cursor: pointer;
-        }
-
-        .dropdown-menu {
-            min-width: 120px;
-        }
-
-        .dropdown-item {
-            color:#333;
-        }
-  </style>
    </head>
 <body>
   <div class="sidebar">
@@ -93,15 +37,9 @@ body {
           </a>
         </li>
         <li>
-          <a href="view_offer">
-            <i class='bx bx-offer' ></i>
+          <a href="offer_page">
+            <i class='bx bx-heart' ></i>
             <span class="links_name">Offer</span>
-          </a>
-        </li>
-        <li>
-          <a href="seller_order">
-            <i class='bx bx-order' ></i>
-            <span class="links_name">Order</span>
           </a>
         </li>
         <li class="log_out">
@@ -118,48 +56,51 @@ body {
         <i class='bx bx-menu sidebarBtn'></i>
         <span class="dashboard">Dashboard</span>
       </div>
-<!--      <div class="search-box">-->
-<!--        <input type="text" placeholder="Search...">-->
-<!--        <i class='bx bx-search' ></i>-->
-<!--      </div>-->
+      <div class="search-box">
+        <input type="text" placeholder="Search...">
+        <i class='bx bx-search' ></i>
+      </div>
       {% for x in sellers %}
       <div class="profile-details">
-<!--        <img src="media/images/profile.png" alt="">-->
         <span class="seller_name">{{x.seller_name}}</span><br><br>
         <span class="seller_id">{{x.seller_id}}</span>
-<!--        <i class='bx bx-chevron-down' ></i>-->
       </div>
       {% endfor %}
     </nav>
 
     <div class="home-content" id="content-placeholder">
-        <div class="cols-lg-9 my-lg-0 my-1">
-            <div id="main-content" class="bg-white border">
-     <form method="POST">
-<table align="center" bgcolor="lightgray" style="width:100%; margin-top:10px; margin-left:200px; margin-bottom:30px; height:80%;">
-  <tr>
-     <td style="color:blue;"><b>Id</b></td>
-    <td style="color:blue;"><b>Discount</b></td>
-    <td style="color:blue;"><b>Event Id</b></td>
-    <td style="color:blue;"><b>Product Id</b></td>
-      <td style="color:blue;"><b>Actions</b></td>
-
-  </tr>
-    {% for x in offer %}
-      <tr>
-        <td>{{x.offer_id}}</td>
-    <td>{{x.discount}}%</td>
-    <td>{{x.event_id}}</td>
-    <td>{{x.product_id}}</td>
-        <td><a style="text-decoration:none;" href="/seller/remove_offer/{{x.offer_id}}"> Remove</a> /
-            <a style="text-decoration:none;" href="/seller/update_offer/{{x.offer_id}}">Update</a>
-        </td>
-  </tr>
-    {% endfor %}
-</table>
-</form>
-    </div>
+       <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100 w-100">
+            <div class="col-xl-10">
+                <div class="row g-0">
+                    <div class="col-lg-6">
+                        <div class="card-body p-md-4 mx-md-4">
+                            <form method="POST">
+                                <h2>UPDATE OFFER</h2>
+                                <div class="form-outline mb-4">
+                                    {% csrf_token %}
+                                    <label class="form-label" for="discount">Discount</label>
+                                    <input type="text" id="discount" name="discount"  value="{{x.discount}}" class="form-control"/>
+                                </div>
+                                <div class="form-outline mb-4">
+                                <label>Event</label>
+                                 <select name='event'  required maxlength="20" value="{{x.event}}">
+                                     {% for x in event %}
+                                     <option value="{{ x.event_id }}">{{ x.event }}</option>
+                                     {% endfor %}
+                                 </select>
+                                <div class="text-center pt-1 mb-5 pb-1">
+                                    <button class="btn btn-outline-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                        type="submit">Add</button><br><br>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+</div>
     </div>
   </section>
 

@@ -14,7 +14,7 @@
      {% load static  %}
     <link rel="stylesheet" href="{% static 'css/style5.css' %}">
         <link rel="stylesheet" href="{% static 'css/style3.css' %}">
-     <script src="{% static '/js/script1.js' %}" type="text/javascript"></script>
+<!--     <script src="{% static '/js/script1.js' %}" type="text/javascript"></script>-->
     <title>more Product</title>
 </head>
 <body>
@@ -23,7 +23,6 @@
     <ul class="navmenu">
         <li><a href="/">Home</a></li>
         <li><a href="about">About</a></li>
-        <li><a href="#Products">Products</a></li>
         <div class="dropdown">
             <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
                 Category</a>
@@ -130,6 +129,7 @@
             {% for review in x.review.all %}
                 <span class="user-name"><b>{{review.user_id.user_name}}</b></span><br>
             <span class="product-review">{{review.review}}</span><br>
+<!--                <a href="/removereview/{{x.user_id}}" style="text-decoration:none;margin-left:500px;">Remove</a>-->
             {% endfor %}
             </div>
         </div><br><br>

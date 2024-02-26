@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
         integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
         crossorigin="anonymous"></script>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style3.css' %}">
         <style>
             ... (previous styles) ... */
 
@@ -25,6 +27,24 @@
                 width: 100%; /* Use percentage-based width for responsiveness */
             } */
 
+             header {
+            position: fixed;
+            background: #fff;
+            width: 100%;
+            top: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 10%;
+        }
+
+        .logo img {
+            max-width: 120px;
+            height: auto;
+
+        }
             .carousel-inner {
                 border-radius: 0 10px 10px 0;
                 width: 100%;
@@ -55,12 +75,12 @@
                 }
 
                 .carousel-inner {
-                    height: auto; /* Allow the height to adjust according to the content */
+                    height: auto;
                 }
 
                 .btn-login {
-                    margin-left: 0px; /* Adjust margin for smaller screens */
-                    margin-top: 15px; /* Adjust margin for smaller screens */
+                    margin-left: 0px;
+                    margin-top: 15px;
                 }
             }
 
@@ -69,6 +89,34 @@
 </head>
 
 <body>
+<header>
+    <a href="#" class="logo"><img src="media/images/fg.jpg" alt=""></a>
+    <ul class="navmenu">
+        <li><a href="/">Home</a></li>
+        <li><a href="about">About</a></li>
+        <div class="dropdown">
+            <a href="#" class=" dropdown-toggle" type="choose" id="dropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                Category</a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu">
+                {% for x in main %}
+                <li><a class="dropdown-item" href="category/{{x.maincategory_id}}">{{x.maincategory_name}}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <li><a href="user_login">Login</a></li>
+        <form class="form-inline my-2 my-lg-0" action="/search"  method="POST">
+                        {% csrf_token %}
+                        <input  type="text" name="product_name" value="{{ request.POST.product_name }}" placeholder="Search.." aria-label="Search">
+                        <button type="submit">Search</button>
+     </form>
+    </ul>
+    <div class="nav-icons">
+        <a href="wishlist"><i style="color: red;" class="fa fa-heart"></i></a>
+        <a href="view_cart"><i class="fa fa-shopping-cart"></i></a>
+        <a href="profile"><i class="fa fa-user"></i></a>
+        <div class="fa fa-bars" id="menu-icon"></div>
+    </div>
+</header><br><br><br><br><br><br><br><br><br><br><br>
     <div class="container">
         <div class="row">
             <div class="col-md-4 review-sec">

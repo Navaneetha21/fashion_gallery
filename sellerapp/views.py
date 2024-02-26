@@ -1,5 +1,8 @@
 from django.shortcuts import render, redirect,loader,HttpResponse
 from .models import *
+from adminsapp.models import *
+from usersapp.models import *
+
 # Create your views here.
 def seller_login(request):
     print(request.method)
@@ -189,7 +192,15 @@ def addprdct(request):
 
 def viewproduct(request):
     product_data = Product.objects.all()
-    return render(request, 'viewproduct_page.html', {'product': product_data})
+    maincategory = MainCategory.objects.prefetch_related('main').all()
+    if request.method == 'POST':
+        print(request.method)
+        search = request.POST.get('product_name')
+        if search:
+            print('fghjk')
+            product_data = Product.objects.filter(product_name__icontains=search)
+            print(product_data)
+    return render(request, 'viewproduct_page.html', {'product': product_data, 'main':maincategory})
 
 def editproduct(request, product_id):
     if 'seller_id' in request.session:
@@ -222,18 +233,58 @@ def editproduct(request, product_id):
     else:
         return redirect('/seller/seller_login')
 
+
 def addoffer(request, product_id):
     if 'seller_id' in request.session:
-        seller_id = request.session.get("seller_id")
         product = Product.objects.filter(product_id=product_id)
+        event = Event.objects.all()
         if request.method == "POST":
-            discount = request.post.get('discount')
+            event_id = request.POST.get("event")
+            discount = request.POST.get('discount')
             data = Offer()
+            data.event_id = Event.objects.get(event_id=event_id)
             data.discount = discount
-            data.seller_id = Seller.objects.get(seller_id=seller_id)
             data.product_id = Product.objects.get(product_id=product_id)
             data.save()
-            return redirect('/')
-        return render(request, 'add_offer.html')
+            return redirect('/seller/view_offer')
+        return render(request, 'add_offer.html', {'offer':product, 'event':event})
     else:
-        return redirect('/seller_login')
+        return redirect('/seller/seller_login')
+
+def viewoffer(request):
+    if 'seller_id' in request.session:
+        seller_id = request.session.get("seller_id")
+        offer = Offer.objects.all()
+        return render(request, 'view_offer.html', {'offer':offer})
+    else:
+        return redirect('/seller/seller_login')
+
+
+def update_offer(request, offer_id):
+    if 'seller_id' in request.session:
+        offer= Offer.objects.filter(offer_id=offer_id)
+        event= Event.objects.all()
+        if request.method == "POST":
+            event_id = request.POST.get('event')
+            discount = request.POST.get('discount')
+            data = Offer.objects.get(offer_id=offer_id)
+            data.event_id = Event.objects.get(event_id=event_id)
+            data.discount = discount
+            data.save()
+            return redirect('/seller/view_offer')
+        return render(request, 'editoffer.html', {'offer':offer, 'event':event})
+    else:
+        return redirect('/seller/seller_login')
+def remove_offer(request, offer_id):
+    print("remove fun called")
+    data = Offer.objects.get(offer_id=offer_id)
+    data.delete()
+    return redirect('/seller/view_offer')
+
+def seller_order(request):
+    if 'seller_id' in request.session:
+        seller_id = request.session.get('seller_id')
+        products = Order.objects.filter(product_id__seller_id=seller_id)
+        return render(request, 'seller_order.html', {'products':products})
+    else:
+        return redirect('/seller/seller_login')

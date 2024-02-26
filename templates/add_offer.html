@@ -82,6 +82,13 @@
                                     <label class="form-label" for="discount">Discount</label>
                                     <input type="text" id="discount" name="discount" class="form-control"/>
                                 </div>
+                                <div class="form-outline mb-4">
+                                <label>Event</label>
+                                 <select name='event'  required maxlength="20" value="{{x.event}}">
+                                     {% for x in event %}
+                                     <option value="{{ x.event_id }}">{{ x.event }}</option>
+                                     {% endfor %}
+                                 </select>
                                 <div class="text-center pt-1 mb-5 pb-1">
                                     <button class="btn btn-outline-primary btn-block fa-lg gradient-custom-2 mb-3"
                                         type="submit">Add</button><br><br>
